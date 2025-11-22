@@ -1,0 +1,100 @@
+<div class="exercise-detail-container" *ngIf="exercise">
+  <div class="exercise-content">
+    <!-- Left Panel: README -->
+    <div class="left-panel">
+      <mat-card class="readme-card">
+        <mat-card-content>
+          <div class="readme-content" [innerHTML]="readmeHtml"></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Right Panel: Code Editor and Results -->
+    <div class="right-panel">
+      <mat-card class="code-card">
+        <mat-card-content>
+          <div class="resizable-container">
+            <!-- Editor Section -->
+            <div class="editor-section">
+              <mat-tab-group *ngIf="codeFiles.length > 0">
+                <mat-tab *ngFor="let file of codeFiles; let i = index; trackBy: trackByFileName" [label]="file.name">
+                  <app-code-editor 
+                    [initialCode]="getOriginalTemplate(file.name)"
+                    [code]="file.content"
+                    [fileName]="file.name"
+                    (codeChanged)="onCodeChange(file.name, $event)">
+                  </app-code-editor>
+                </mat-tab>
+              </mat-tab-group>
+              
+              <div *ngIf="codeFiles.length === 0" class="no-files">
+                <mat-spinner *ngIf="loading"></mat-spinner>
+                <p *ngIf="!loading">Loading template files...</p>
+              </div>
+            </div>
+
+            <!-- Resize Handle -->
+            <div class="resize-handle" 
+                 [class.dragging]="isDragging"
+                 (mousedown)="onResizeStart($event)">
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section" [ngStyle]="getResultsStyle()">
+              <mat-card class="test-result-card">
+                <mat-card-header>
+                  <mat-card-title>Test Results</mat-card-title>
+                  <div class="card-actions">
+                    <button mat-raised-button color="primary" (click)="runTests()" 
+                            [disabled]="loading || !exercise.hasTests || codeFiles.length === 0">
+                      {{loading ? 'Testing...' : 'Run Tests'}}
+                    </button>
+                  </div>
+                </mat-card-header>
+                <mat-card-content>
+                  <div *ngIf="!testResult" class="test-result placeholder">
+                    <p>Run tests to see results here</p>
+                  </div>
+
+                  <div *ngIf="testResult" [class]="'test-result ' + (testResult.success ? 'success' : 'error')">
+                    <h4>{{testResult.success ? '✅ All Tests Passed' : '❌ Tests Failed'}}</h4>
+                    <p><strong>Execution time:</strong> {{testResult.executionTimeMs}}ms</p>
+                    
+                    <div *ngIf="testResult.compilationErrors && testResult.compilationErrors.length > 0">
+                      <h5>Compilation Errors:</h5>
+                      <pre class="pre-wrap">{{testResult.compilationErrors.join('\n')}}</pre>
+                    </div>
+                    
+                    <div *ngIf="testResult.testFailures && testResult.testFailures.length > 0">
+                      <h5>Test Failures:</h5>
+                      <pre class="pre-wrap">{{testResult.testFailures.join('\n')}}</pre>
+                    </div>
+                    
+                    <div *ngIf="testResult.errorOutput">
+                      <h5>Error Output:</h5>
+                      <pre class="pre-wrap">{{testResult.errorOutput}}</pre>
+                    </div>
+
+                    <div *ngIf="testResult.output">
+                      <h5>Output:</h5>
+                      <pre class="pre-wrap">{{testResult.output}}</pre>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!exercise && !loading" class="error">
+  <h2>Exercise not found</h2>
+</div>
+
+<div *ngIf="loading && !exercise" class="loading">
+  <mat-spinner></mat-spinner>
+  <p>Loading exercise...</p>
+</div>

@@ -1,0 +1,57 @@
+# Java Checkpoint Trainer - Git Ignore
+
+# === Backend (Spring Boot) ===
+backend/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/*.log
+backend/.DS_Store
+
+# === Frontend (Angular) ===
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/npm-debug.log*
+frontend/yarn-error.log*
+frontend/.DS_Store
+frontend/package-lock.json
+
+# === IDE / Editor ===
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Build Artifacts ===
+*.class
+*.jar
+*.war
+*.ear
+
+# === Logs ===
+*.log
+
+# === Runtime ===
+*.pid
+*.tmp
+*.swp
+
+# === IMPORTANT: Keep Exercise Files ===
+# We want to track all Java exercises and test files
+# DO NOT ignore g1/, g2/, g3/, g4/ folders
+# DO NOT ignore *.java files
+# DO NOT ignore README.md files
+# DO NOT ignore test.sh
+
+# Only ignore build artifacts inside exercise folders
+g*/*/build/
+g*/*/*.class

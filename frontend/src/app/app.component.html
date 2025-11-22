@@ -1,0 +1,17 @@
+<mat-toolbar color="primary">
+  <mat-icon>code</mat-icon>
+  <span>Java Checkpoint Trainer</span>
+  <span class="exercise-info" *ngIf="currentExercise">
+    <span class="divider">|</span>
+    <span [class]="'level-badge level-' + currentExercise.level">{{currentExercise.level.toUpperCase()}}</span>
+    <span class="exercise-name">{{currentExercise.name}}</span>
+  </span>
+  <span class="spacer"></span>
+  <button mat-button routerLink="/exercises">
+    <mat-icon>list</mat-icon>
+    Exercises
+  </button>
+</mat-toolbar>
+<main>
+  <router-outlet></router-outlet>
+</main>
