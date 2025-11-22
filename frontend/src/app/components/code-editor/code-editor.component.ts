@@ -68,18 +68,88 @@ export class CodeEditorComponent implements OnInit, OnChanges {
   private setupTextareaFeatures() {
     const textarea = this.codeTextarea.nativeElement;
     
-    // Add tab support
     textarea.addEventListener('keydown', (e) => {
+      // Tab support
       if (e.key === 'Tab') {
         e.preventDefault();
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
         
-        // Insert tab character
         textarea.value = textarea.value.substring(0, start) + '    ' + textarea.value.substring(end);
         textarea.selectionStart = textarea.selectionEnd = start + 4;
         
-        // Update ngModel
+        this.currentCode = textarea.value;
+        this.onCodeChange();
+        return;
+      }
+      
+      // Auto-close brackets and quotes
+      const pairs: { [key: string]: string } = {
+        '(': ')',
+        '{': '}',
+        '[': ']',
+        '"': '"',
+        "'": "'"
+      };
+      
+      if (pairs[e.key]) {
+        e.preventDefault();
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selectedText = textarea.value.substring(start, end);
+        
+        // Insert opening and closing characters with selected text in between
+        textarea.value = textarea.value.substring(0, start) + 
+                        e.key + selectedText + pairs[e.key] + 
+                        textarea.value.substring(end);
+        
+        // Position cursor between the pair
+        textarea.selectionStart = textarea.selectionEnd = start + 1 + selectedText.length;
+        
+        this.currentCode = textarea.value;
+        this.onCodeChange();
+        return;
+      }
+      
+      // Auto-indent on Enter
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const start = textarea.selectionStart;
+        const lines = textarea.value.substring(0, start).split('\n');
+        const currentLine = lines[lines.length - 1];
+        
+        // Calculate indentation of current line
+        const indent = currentLine.match(/^\s*/)?.[0] || '';
+        
+        // Check if current line ends with opening brace
+        const trimmedLine = currentLine.trim();
+        const needsExtraIndent = trimmedLine.endsWith('{') || 
+                                 trimmedLine.endsWith('(') || 
+                                 trimmedLine.endsWith('[');
+        
+        // Check if next character is a closing brace
+        const nextChar = textarea.value[start];
+        const isClosingBrace = nextChar === '}' || nextChar === ')' || nextChar === ']';
+        
+        let newText = '\n' + indent;
+        if (needsExtraIndent) {
+          newText += '    '; // Add extra indent after opening brace
+        }
+        
+        let cursorOffset = newText.length;
+        
+        // If closing brace follows, add a new line with original indent
+        if (isClosingBrace && needsExtraIndent) {
+          newText += '\n' + indent;
+          cursorOffset = newText.length - indent.length - 1;
+        }
+        
+        textarea.value = textarea.value.substring(0, start) + 
+                        newText + 
+                        textarea.value.substring(start);
+        
+        textarea.selectionStart = textarea.selectionEnd = start + cursorOffset;
+        
         this.currentCode = textarea.value;
         this.onCodeChange();
       }
