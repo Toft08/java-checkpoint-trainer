@@ -1,11 +1,12 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 import { ExerciseService } from '../../exercise.service';
 import { Exercise, TestResult } from '../../models';
@@ -24,6 +25,7 @@ import hljs from 'highlight.js';
     MatTabsModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatIconModule,
     CodeEditorComponent
   ],
   templateUrl: './exercise-detail.component.html',
@@ -40,9 +42,12 @@ export class ExerciseDetailComponent implements OnInit {
   isDragging = false;
   private startY = 0;
   private startHeight = 0;
+  allExercises: Exercise[] = [];
+  currentExerciseIndex = -1;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private exerciseService: ExerciseService,
     private snackBar: MatSnackBar
   ) {
@@ -61,9 +66,63 @@ export class ExerciseDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.loadExercise(params['level'], params['name']);
+    // Load all exercises first
+    this.exerciseService.getAllExercises().subscribe((exercises: Exercise[]) => {
+      this.allExercises = exercises;
+      
+      // Check if we're in random test mode
+      const randomTestExercises = localStorage.getItem('randomTestExercises');
+      if (randomTestExercises) {
+        try {
+          this.allExercises = JSON.parse(randomTestExercises);
+        } catch (e) {
+          console.error('Error parsing random test exercises', e);
+        }
+      }
+      
+      // Then load the current exercise
+      this.route.params.subscribe(params => {
+        this.loadExercise(params['level'], params['name']);
+      });
     });
+  }
+
+  updateCurrentIndex() {
+    if (this.exercise && this.allExercises.length > 0) {
+      this.currentExerciseIndex = this.allExercises.findIndex(
+        ex => ex.level === this.exercise!.level && ex.name === this.exercise!.name
+      );
+    }
+  }
+
+  goToNextExercise() {
+    if (this.currentExerciseIndex >= 0 && this.currentExerciseIndex < this.allExercises.length - 1) {
+      const nextExercise = this.allExercises[this.currentExerciseIndex + 1];
+      this.router.navigate(['/exercise', nextExercise.level, nextExercise.name]);
+    } else if (this.allExercises.length > 0) {
+      // Wrap around to first exercise
+      const firstExercise = this.allExercises[0];
+      this.router.navigate(['/exercise', firstExercise.level, firstExercise.name]);
+    }
+  }
+
+  goToPreviousExercise() {
+    if (this.currentExerciseIndex > 0) {
+      const prevExercise = this.allExercises[this.currentExerciseIndex - 1];
+      this.router.navigate(['/exercise', prevExercise.level, prevExercise.name]);
+    } else if (this.allExercises.length > 0) {
+      // Wrap around to last exercise
+      const lastExercise = this.allExercises[this.allExercises.length - 1];
+      this.router.navigate(['/exercise', lastExercise.level, lastExercise.name]);
+    }
+  }
+
+  hasNextExercise(): boolean {
+    return this.allExercises.length > 0;
+  }
+
+  hasPreviousExercise(): boolean {
+    return this.allExercises.length > 0;
   }
 
   loadExercise(level: string, name: string) {
@@ -74,6 +133,7 @@ export class ExerciseDetailComponent implements OnInit {
         this.readmeHtml = this.convertMarkdownToHtml(exercise.readmeContent || '');
         this.loading = false;
         this.loadTemplateFiles();
+        this.updateCurrentIndex(); // Update index after exercise is loaded
       },
       error: (error) => {
         console.error('Error loading exercise:', error);

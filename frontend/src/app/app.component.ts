@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd, RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,7 +9,7 @@ import { filter } from 'rxjs/operators';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MatToolbarModule, MatButtonModule, MatIconModule, CommonModule],
+  imports: [RouterOutlet, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, CommonModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

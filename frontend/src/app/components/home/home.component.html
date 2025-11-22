@@ -1,0 +1,47 @@
+<div class="home-container">
+  <div class="hero-section">
+    <h1>Java Checkpoint Trainer</h1>
+    <p class="subtitle">Practice and prepare for your Java checkpoint exams</p>
+  </div>
+
+  <div class="info-section">
+    <mat-card>
+      <mat-card-content>
+        <p>
+          This trainer provides a replica of the real test environment with Docker-based testing.
+          Choose from 25+ exercises across 4 difficulty levels or start a random test to simulate exam conditions.
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="action-section">
+    <button mat-raised-button color="primary" class="start-button" (click)="startRandomTest()">
+      <mat-icon>shuffle</mat-icon>
+      Start Random Test
+    </button>
+    
+    <button mat-raised-button color="accent" class="browse-button" (click)="goToExercises()">
+      <mat-icon>list</mat-icon>
+      Browse All Exercises
+    </button>
+  </div>
+
+  <div class="features-section">
+    <div class="feature">
+      <mat-icon>check_circle</mat-icon>
+      <h3>Real Docker Tests</h3>
+      <p>Same testing environment as actual checkpoints</p>
+    </div>
+    <div class="feature">
+      <mat-icon>code</mat-icon>
+      <h3>Code Editor</h3>
+      <p>Write and test your solutions instantly</p>
+    </div>
+    <div class="feature">
+      <mat-icon>school</mat-icon>
+      <h3>4 Difficulty Levels</h3>
+      <p>From fundamentals to expert challenges</p>
+    </div>
+  </div>
+</div>

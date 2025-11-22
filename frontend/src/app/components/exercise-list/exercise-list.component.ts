@@ -37,7 +37,7 @@ import { Exercise } from '../../models';
             <mat-card 
               *ngFor="let exercise of getExercisesByLevel(level)" 
               class="exercise-card"
-              [routerLink]="['/exercises', exercise.level, exercise.name]">
+              [routerLink]="['/exercise', exercise.level, exercise.name]">
               
               <mat-card-header>
                 <mat-card-title>

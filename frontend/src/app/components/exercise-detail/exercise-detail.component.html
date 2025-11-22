@@ -45,6 +45,18 @@
                 <mat-card-header>
                   <mat-card-title>Test Results</mat-card-title>
                   <div class="card-actions">
+                    <button mat-icon-button 
+                            [disabled]="!hasPreviousExercise()"
+                            (click)="goToPreviousExercise()"
+                            matTooltip="Previous Exercise">
+                      <mat-icon>arrow_back</mat-icon>
+                    </button>
+                    <button mat-icon-button 
+                            [disabled]="!hasNextExercise()"
+                            (click)="goToNextExercise()"
+                            matTooltip="Next Exercise">
+                      <mat-icon>arrow_forward</mat-icon>
+                    </button>
                     <button mat-raised-button color="primary" (click)="runTests()" 
                             [disabled]="loading || !exercise.hasTests || codeFiles.length === 0">
                       {{loading ? 'Testing...' : 'Run Tests'}}
