@@ -1,17 +1,13 @@
 public class Singleton {
-    private static Singleton instance;
+    public Singleton instance;
 
-    private Singleton() {
+    ??? Singleton() {
     }
 
-    public static Singleton getInstance() {
-        if (instance == null) {
-            instance = new Singleton();
-        }
-        return instance;
+    public ??? Singleton get???() {
     }
 
     public String showMessage() {
-        return "Hello, I am a singleton!";
+        return "Hello, I am a singleton!"
     }
 }

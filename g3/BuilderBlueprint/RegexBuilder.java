@@ -1,4 +1,4 @@
-public interface RegexBuilder {
+public ... RegexBuilder {
     void buildLiteral(String literal);
     void buildAnyCharacter();
     void buildDigit();

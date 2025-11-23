@@ -1,3 +1,3 @@
-public enum TaskStatus {
+enum TaskStatus {
     NEW, IN_PROGRESS, COMPLETED
 }
