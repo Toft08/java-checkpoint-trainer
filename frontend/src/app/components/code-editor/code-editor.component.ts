@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import hljs from 'highlight.js';
 
 @Component({
   selector: 'app-code-editor',
@@ -23,14 +25,23 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
             </button>
           </div>
         </div>
-        <textarea
-          #codeTextarea
-          class="code-textarea"
-          [(ngModel)]="currentCode"
-          [placeholder]="placeholder"
-          spellcheck="false"
-          (input)="onCodeChange()"
-        ></textarea>
+        <div class="editor-body">
+          <div class="line-numbers" #lineNumbers>
+            <div *ngFor="let line of getLineNumbers()" class="line-number">{{ line }}</div>
+          </div>
+          <div class="code-area">
+            <div class="code-highlight" #codeHighlight [innerHTML]="highlightedHtml"></div>
+            <textarea
+              #codeTextarea
+              class="code-textarea"
+              [(ngModel)]="currentCode"
+              [placeholder]="placeholder"
+              spellcheck="false"
+              (input)="onCodeChange()"
+              (scroll)="onScroll()"
+            ></textarea>
+          </div>
+        </div>
         <div class="editor-footer">
           <span class="language-tag">{{ language }}</span>
           <span class="line-count">{{ getLineCount() }} lines</span>
@@ -42,6 +53,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class CodeEditorComponent implements OnInit, OnChanges {
   @ViewChild('codeTextarea', { static: true }) codeTextarea!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('lineNumbers', { static: false }) lineNumbers!: ElementRef<HTMLDivElement>;
+  @ViewChild('codeHighlight', { static: false }) codeHighlight!: ElementRef<HTMLDivElement>;
   @Input() initialCode: string = ''; // Original template for reset
   @Input() code: string = ''; // Current code value
   @Input() language: string = 'java';
@@ -50,11 +63,16 @@ export class CodeEditorComponent implements OnInit, OnChanges {
   @Output() codeChanged = new EventEmitter<string>();
 
   currentCode: string = '';
+  highlightedHtml: SafeHtml = '';
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit() {
     this.currentCode = this.code || this.initialCode;
+    this.updateHighlighting();
     this.setupTextareaFeatures();
   }
 
@@ -157,7 +175,12 @@ export class CodeEditorComponent implements OnInit, OnChanges {
   }
 
   onCodeChange() {
+    this.updateHighlighting();
     this.codeChanged.emit(this.currentCode);
+  }
+
+  updateHighlighting() {
+    this.highlightedHtml = this.getHighlightedCode();
   }
 
   getValue(): string {
@@ -185,5 +208,32 @@ export class CodeEditorComponent implements OnInit, OnChanges {
 
   getLineCount(): number {
     return this.currentCode.split('\n').length;
+  }
+
+  getLineNumbers(): number[] {
+    const count = this.getLineCount();
+    return Array.from({ length: count }, (_, i) => i + 1);
+  }
+
+  getHighlightedCode(): SafeHtml {
+    const code = this.currentCode || '';
+    if (!code) {
+      return this.sanitizer.bypassSecurityTrustHtml('');
+    }
+
+    const highlighted = hljs.highlight(code, { language: 'java' }).value;
+    return this.sanitizer.bypassSecurityTrustHtml(highlighted);
+  }
+
+  onScroll(): void {
+    if (this.lineNumbers && this.codeTextarea) {
+      const scrollTop = this.codeTextarea.nativeElement.scrollTop;
+      const scrollLeft = this.codeTextarea.nativeElement.scrollLeft;
+      this.lineNumbers.nativeElement.scrollTop = scrollTop;
+      if (this.codeHighlight) {
+        this.codeHighlight.nativeElement.scrollTop = scrollTop;
+        this.codeHighlight.nativeElement.scrollLeft = scrollLeft;
+      }
+    }
   }
 }
