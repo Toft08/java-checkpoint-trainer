@@ -122,6 +122,12 @@
   .hljs-function {
     color: #ce9dff;
   }
+
+  .hljs-variable,
+  .hljs-property,
+  .hljs-operator {
+    color: #d4d4d4;
+  }
 }
 
 .editor-container {
