@@ -83,6 +83,8 @@ public class DockerTestService {
             command.add("docker");
             command.add("run");
             command.add("--rm");
+            command.add("--platform");
+            command.add("linux/amd64");
             command.add("-e");
             command.add("EXERCISE=" + exerciseName);
             command.add("-v");
