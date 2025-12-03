@@ -146,27 +146,10 @@ Frontend: `frontend/src/environments/environment.ts`
 
 ## Deployment
 
-### Docker Deployment (Production)
-
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop
-docker-compose down
-```
-
-### Traditional Deployment
-
 This application requires a server environment with Docker. It cannot be deployed as a static site.
 
 Deployment options:
 
-- Docker Compose: Easiest, recommended for production
-- Kubernetes: For scalable deployments
 - Local development: Use the included scripts
 - Server deployment: Deploy both Spring Boot backend and Angular frontend to a server with Docker installed
 
@@ -176,11 +159,6 @@ Deployment options:
 
 - Ensure Docker Desktop is running
 
-**Docker Compose**: "Port already in use"
-
-- Stop conflicting services: `docker-compose down`
-- Change ports in `docker-compose.yml` if needed
-
 **Scripts**: "Permission denied"
 
 - Run `chmod +x *.sh`
@@ -188,12 +166,10 @@ Deployment options:
 **Backend**: "Port 8080 already in use"
 
 - Change `server.port` in application.properties or kill the process
-- With Docker: `docker-compose down` and restart
 
 **Frontend**: "Cannot connect to backend"
 
 - Ensure backend is running on port 8080
-- With Docker: Check `docker-compose logs backend`
 
 **Maven Wrapper**: "mvnw not found"
 
