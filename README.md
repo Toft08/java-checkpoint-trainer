@@ -18,17 +18,9 @@ A full-stack web application for training on Java checkpoint exercises with inte
 
 ## Prerequisites
 
-### Option 1: Docker (Recommended - Easiest)
-
-- Docker Desktop (running)
-
-That's it! No need for Java, Node, or Maven installations.
-
-### Option 2: Local Development
-
 - Java 17 or higher
-- Node.js 18+ and npm
-- Docker Desktop (running)
+- Node.js 18+ and npm  
+- Docker Desktop (running) - required for test execution
 - Maven (included via mvnw wrapper)
 
 ## Project Structure
@@ -58,20 +50,6 @@ java-checkpoint-trainer/
 
 ## Quick Start
 
-### Using Docker (Recommended)
-
-```bash
-# Build and start everything with one command
-docker-compose up --build
-
-# Open http://localhost:4200 in your browser
-
-# Stop with Ctrl+C, or in another terminal:
-docker-compose down
-```
-
-### Using Shell Scripts (Local Development)
-
 ```bash
 # Build and start both servers
 ./build-all.sh
@@ -83,7 +61,7 @@ docker-compose down
 ./stop-all.sh
 ```
 
-### Manual Start (Local Development)
+### Manual Start
 
 ```bash
 # Backend
