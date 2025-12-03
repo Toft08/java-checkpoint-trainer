@@ -35,7 +35,17 @@ echo "✅ Docker is running"
 echo ""
 echo "🏗️  Building Backend..."
 cd backend
-./mvnw clean package -DskipTests
+
+# Use mvnw if available, otherwise use system maven
+if [ -f "./mvnw" ]; then
+    ./mvnw clean package -DskipTests
+elif command -v mvn &> /dev/null; then
+    mvn clean package -DskipTests
+else
+    echo "❌ Maven not found. Please install Maven or generate Maven wrapper."
+    exit 1
+fi
+
 if [ $? -eq 0 ]; then
     echo "✅ Backend built successfully"
 else

@@ -18,6 +18,14 @@ A full-stack web application for training on Java checkpoint exercises with inte
 
 ## Prerequisites
 
+### Option 1: Docker (Recommended - Easiest)
+
+- Docker Desktop (running)
+
+That's it! No need for Java, Node, or Maven installations.
+
+### Option 2: Local Development
+
 - Java 17 or higher
 - Node.js 18+ and npm
 - Docker Desktop (running)
@@ -50,6 +58,20 @@ java-checkpoint-trainer/
 
 ## Quick Start
 
+### Using Docker (Recommended)
+
+```bash
+# Build and start everything with one command
+docker-compose up --build
+
+# Open http://localhost:4200 in your browser
+
+# Stop with Ctrl+C, or in another terminal:
+docker-compose down
+```
+
+### Using Shell Scripts (Local Development)
+
 ```bash
 # Build and start both servers
 ./build-all.sh
@@ -61,7 +83,7 @@ java-checkpoint-trainer/
 ./stop-all.sh
 ```
 
-### Manual Start
+### Manual Start (Local Development)
 
 ```bash
 # Backend
@@ -96,6 +118,7 @@ All tests run using the official 01-edu Docker image.
 ## Exercises Included
 
 ### G1 - Fundamentals
+
 - AgeFinder
 - DayOfWeek
 - MonthlyPeriod
@@ -104,6 +127,7 @@ All tests run using the official 01-edu Docker image.
 - TodoList
 
 ### G2 - Intermediate
+
 - AlmostPalindrome
 - BreakdownURL
 - ConfigProtector
@@ -113,6 +137,7 @@ All tests run using the official 01-edu Docker image.
 - NextPrime
 
 ### G3 - Advanced
+
 - BuilderBlueprint
 - CircularLinkedList
 - DoubleLinkedList
@@ -121,6 +146,7 @@ All tests run using the official 01-edu Docker image.
 - SingletonBlueprint
 
 ### G4 - Expert
+
 - DistinctSubstringLength
 - FirstUnique
 - HarmoniousFusion
@@ -142,25 +168,59 @@ Frontend: `frontend/src/environments/environment.ts`
 
 ## Deployment
 
+### Docker Deployment (Production)
+
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop
+docker-compose down
+```
+
+### Traditional Deployment
+
 This application requires a server environment with Docker. It cannot be deployed as a static site.
 
 Deployment options:
+
+- Docker Compose: Easiest, recommended for production
+- Kubernetes: For scalable deployments
 - Local development: Use the included scripts
 - Server deployment: Deploy both Spring Boot backend and Angular frontend to a server with Docker installed
 
 ## Troubleshooting
 
 **Docker**: "Cannot connect to Docker daemon"
+
 - Ensure Docker Desktop is running
 
+**Docker Compose**: "Port already in use"
+
+- Stop conflicting services: `docker-compose down`
+- Change ports in `docker-compose.yml` if needed
+
 **Scripts**: "Permission denied"
+
 - Run `chmod +x *.sh`
 
 **Backend**: "Port 8080 already in use"
+
 - Change `server.port` in application.properties or kill the process
+- With Docker: `docker-compose down` and restart
 
 **Frontend**: "Cannot connect to backend"
+
 - Ensure backend is running on port 8080
+- With Docker: Check `docker-compose logs backend`
+
+**Maven Wrapper**: "mvnw not found"
+
+- The Maven wrapper files should be committed to the repository
+- If missing, run: `mvn wrapper:wrapper` in the backend directory
 
 ## About This Project
 
