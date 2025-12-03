@@ -85,6 +85,7 @@ export class CodeEditorComponent implements OnInit, OnChanges {
 
   private setupTextareaFeatures() {
     const textarea = this.codeTextarea.nativeElement;
+    const closingChars = [')', '}', ']', '"', "'"];
     
     textarea.addEventListener('keydown', (e) => {
       // Tab support
@@ -110,6 +111,18 @@ export class CodeEditorComponent implements OnInit, OnChanges {
         "'": "'"
       };
       
+      // Skip over closing character if it's the next character
+      if (closingChars.includes(e.key)) {
+        const start = textarea.selectionStart;
+        const nextChar = textarea.value[start];
+        
+        if (nextChar === e.key) {
+          e.preventDefault();
+          textarea.selectionStart = textarea.selectionEnd = start + 1;
+          return;
+        }
+      }
+      
       if (pairs[e.key]) {
         e.preventDefault();
         const start = textarea.selectionStart;
@@ -122,7 +135,8 @@ export class CodeEditorComponent implements OnInit, OnChanges {
                         textarea.value.substring(end);
         
         // Position cursor between the pair
-        textarea.selectionStart = textarea.selectionEnd = start + 1 + selectedText.length;
+        const newCursorPos = start + 1 + selectedText.length;
+        textarea.selectionStart = textarea.selectionEnd = newCursorPos;
         
         this.currentCode = textarea.value;
         this.onCodeChange();
