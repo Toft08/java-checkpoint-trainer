@@ -51,11 +51,13 @@
                             matTooltip="Previous Exercise">
                       <mat-icon>arrow_back</mat-icon>
                     </button>
-                    <button mat-icon-button 
+                    <button mat-raised-button 
                             [disabled]="!hasNextExercise()"
                             (click)="goToNextExercise()"
-                            matTooltip="Next Exercise">
-                      <mat-icon>arrow_forward</mat-icon>
+                            [color]="isLastExercise() ? 'warn' : 'accent'"
+                            [matTooltip]="isLastExercise() ? 'Exit Test' : 'Next Exercise'">
+                      <mat-icon>{{ isLastExercise() ? 'exit_to_app' : 'arrow_forward' }}</mat-icon>
+                      {{ isLastExercise() ? 'Exit' : 'Next' }}
                     </button>
                     <button mat-raised-button color="primary" (click)="runTests()" 
                             [disabled]="loading || !exercise.hasTests || codeFiles.length === 0">

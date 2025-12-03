@@ -7,6 +7,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ExerciseService } from '../../exercise.service';
 import { Exercise, TestResult } from '../../models';
@@ -26,6 +27,7 @@ import hljs from 'highlight.js';
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatIconModule,
+    MatTooltipModule,
     CodeEditorComponent
   ],
   templateUrl: './exercise-detail.component.html',
@@ -99,10 +101,9 @@ export class ExerciseDetailComponent implements OnInit {
     if (this.currentExerciseIndex >= 0 && this.currentExerciseIndex < this.allExercises.length - 1) {
       const nextExercise = this.allExercises[this.currentExerciseIndex + 1];
       this.router.navigate(['/exercise', nextExercise.level, nextExercise.name]);
-    } else if (this.allExercises.length > 0) {
-      // Wrap around to first exercise
-      const firstExercise = this.allExercises[0];
-      this.router.navigate(['/exercise', firstExercise.level, firstExercise.name]);
+    } else {
+      // Exit test - navigate to home
+      this.router.navigate(['/']);
     }
   }
 
@@ -119,6 +120,10 @@ export class ExerciseDetailComponent implements OnInit {
 
   hasNextExercise(): boolean {
     return this.allExercises.length > 0;
+  }
+
+  isLastExercise(): boolean {
+    return this.currentExerciseIndex === this.allExercises.length - 1;
   }
 
   hasPreviousExercise(): boolean {
